@@ -1,0 +1,78 @@
+- for photo in @results
+  #picture-frame
+    .lower-right
+      .upper-left
+        #image-replace.frame-image
+          = image_tag photo.url(:medium)
+        .upper-right
+        .lower-left
+
+#pagination
+  .pagination{:class => "photos"}
+    = page_entries_info @results, :entry_name => 'Photo'
+  = will_paginate @results, :page_links => false, :renderer => 'RemoteLinkRenderer', :remote => {:update => 'photos'}
+
+:javascript
+    $(document).ready(function() {
+    
+      Cufon.replace('.pagination', {fontFamily: 'Dakota'});
+      Cufon.replace('.pagination a', {fontFamily: 'Dakota'});
+      Cufon.replace('.pagination span', {fontFamily: 'Dakota'});
+      $('.pagination span.gap').html("...");
+  
+        function showImage(){
+  
+        var img = new Image();
+
+          // wrap our new image in jQuery, then:
+          $(img).load(function () {
+              
+              // set the image hidden by default    
+              $(this).hide();
+          
+              // with the holding div #loader, apply:
+              $('#image-replace').empty().append(this);
+          
+              $(this).show().fadeTo(0, 0.0).fadeTo(500, 0.0).fadeTo("slow", 1);
+          
+              var image = $(this);
+          
+              var maxWidth = 420; // Max width for the image
+              var maxHeight = 300;    // Max height for the image
+              var ratio = 0;  // Used for aspect ratio
+              var width = image.width();    // Current image width
+              var height = image.height();  // Current image height
+
+              // Check if the current width is larger than the max
+              if(width > maxWidth){
+                  ratio = maxWidth / width;   // get ratio for scaling image
+                  image.css("width", maxWidth); // Set new width
+                  image.css("height", height * ratio);  // Scale height based on ratio
+                  height = height * ratio;    // Reset height to match scaled image
+                  width = width * ratio;    // Reset width to match scaled image
+              }
+
+              // Check if current height is larger than max
+              if(height > maxHeight){
+                  ratio = maxHeight / height; // get ratio for scaling image
+                  image.css("height", maxHeight);   // Set new height
+                  image.css("width", width * ratio);    // Scale width based on ratio
+                  width = width * ratio;    // Reset width to match scaled image
+              }
+              
+              $('#image-replace').animate({ width:image.width(), height:image.height() }, 500).find("img");
+              $("#picture-frame").animate({ marginLeft:(maxWidth - width)/2 + 123, marginTop:0, marginBottom:0, width:image.width() + 46, height:image.height() + 46 }, 500);
+          
+          }).error(function () {
+              // notify the user that the image could not be loaded
+          }).attr('src', $("#image-replace img").attr("src"));
+      }
+      
+
+      $("#image-replace img").hide();
+      $("#image-replace").css("width", 420);
+      $("#image-replace").css("height", 300);
+      
+      showImage();
+  
+    });

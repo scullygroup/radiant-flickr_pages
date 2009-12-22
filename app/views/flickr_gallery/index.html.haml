@@ -1,0 +1,10 @@
+- content_for :photos do
+  // Photo Gallery paginated photos
+  %h1
+    = get_setname
+  #photos
+    = render 'photos'
+
+- content_for :photosets do
+  #photosets
+    = get_photosets

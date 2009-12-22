@@ -1,0 +1,52 @@
+h1. Radiant CMS testimonial management tool extension
+
+A quick=and-dirty extension that allows you to add paginated Flickr Galleries in Radiant.
+
+
+h2. Requirements
+
+<p>*Radiant Extensions*<br />
+Shared-Layout, "http://github.com/radiant/radiant-share-layouts-extension":http://github.com/radiant/radiant-share-layouts-extension</p>
+
+<p>*Gems*<br />
+Flickr_fu, "http://github.com/commonthread/flickr_fu":http://github.com/commonthread/flickr_fu<br/>
+Will_Paginate, "http://wiki.github.com/mislav/will_paginate":http://wiki.github.com/mislav/will_paginate</p>
+
+h1. How to Install
+
+Place the flickr_pages_ extension in vendor/extensions
+<pre><code>
+  git://github.com/scullygroup/radiant-flickr-pages_.git vender/extensions/flickr_pages
+</code></pre>
+
+Run the migration of the Flickr Pages extension
+<pre><code>
+rake radiant:extensions:flickr_pages:migrate
+</code></pre>
+
+h2. Notes
+
+This extension uses Sean Cribbs excellent radiant-share-layouts-extension (http://github.com/radiant/radiant-share-layouts-extension).
+
+The project show view is wrapped in a block (in this example, this queries the body column): 
+<pre><code><% content_for :guestphotos do %></code></pre>
+
+In order to invoke the view on a Radiant page, create a layout called "GuestPhotos" and insert the following radial tags wherever you want the guestbook to appear: 
+<pre><code>
+  <r:content part="guestphotos" />
+</code></pre>
+
+h2. How to Use
+
+As per the flickr_fu instructions, place a file called flickr.yml in the config directory that contains the following information:
+<pre><code>
+  key: abc123abc123abc123abc123abc123abc123abc123abc123abc #your api key
+  secret: abc123abc123abc #your secret key
+</code></pre>
+
+In order to pull the desired photos from your Flickr account, edit the following line in vendor/extensions/flickr_pages/app/controllers/flickr_pages_controller.rb
+<pre><code>
+  @photos = @flickr.photos.search(:user_id => '123456@N04', :tags => "your-comma-separated-list-of-tags")
+</code></pre>
+
+Copyright (c) 2009 Scully Group, released under the MIT License
